@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Marker } from 'react-google-maps';
+import { Marker } from '@react-google-maps/api';
 
 class MapViewMarker extends Component {
   state = {
@@ -12,7 +12,7 @@ class MapViewMarker extends Component {
     this.setState({ isOpen: false });
   }
   render() {
-    const { description, title, coordinate, onPress, ...rest } = this.props;
+    const { description, title, position, onClick, ...rest } = this.props;
 
     const childrenWithProps = React.Children.map(this.props.children, child => {
       return React.cloneElement(child, { hideCallout: this.hideCallout.bind(this) });
@@ -20,9 +20,9 @@ class MapViewMarker extends Component {
     return (
       <Marker
         {...rest}
-        title={description ? `${title}\n${description}` : title}
-        position={{ lat: coordinate.latitude, lng: coordinate.longitude }}
-        onClick={onPress}>
+        title={title}
+        position= {position}
+        onClick={onClick}>
         {this.state.isOpen && childrenWithProps}
       </Marker>
     );

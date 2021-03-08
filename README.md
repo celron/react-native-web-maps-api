@@ -1,12 +1,21 @@
-# react-native-web-maps
+# react-native-web-maps-api
 > React Native for Web implementation of react-native-maps
+
+This is based on react-native-web-community/react-native-web-maps
+It was created because that repository provides an react native interface to google maps through
+tomchentw.github.io/react-google-maps, is not actively maintained, however a successor
+JustFly1984/react-google-maps-api or @react-google-maps/api is more actively maintained.
+
+This uses @react-google-maps/api
+
+It ia a work in progress
 
 ## Getting started
 `$ npm install react-native-web-maps --save`
 
-To implement `react-native-web-maps` we're using the `react-google-maps` package:
+To implement `react-native-web-maps-api` we're using the `@react-google-maps/api` package:
 
-`$ npm install react-google-maps --save`
+`$ npm install @react-google-maps/api --save`
 
 Alias the package in your webpack config:
 
@@ -24,7 +33,8 @@ You need to have a Google Maps Javascript API key to use the map, you can get on
 
 Then, you should add this script to your index.html:
 ``` html
-<script src="https://maps.googleapis.com/maps/api/js?key=<YOUR_GOOGLE_API_KEY>"></script>
+<MapView googleMapsApiKey = {"MAPAPIKEY"}>
+</MapView>
 ```
 
 ## Usage

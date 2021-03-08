@@ -1,112 +1,95 @@
-import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { withGoogleMap, GoogleMap } from 'react-google-maps';
-import Marker from './Marker';
-import Polyline from './Polyline';
-import Callout from './Callout';
+import React from 'react'
+import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+export {default as Marker} from './Marker';
+export {default as OverlayView} from './OverlayView';
+export {default as Circle} from './Circle';
+//import mvMarker from './Marker';
+//import mvPolyline from './Polyline';
+//import mvOverlayView from './OverlayView';
+//import mvCallout from './Callout';
 
-const GoogleMapContainer = withGoogleMap(props => (
-  <GoogleMap {...props} ref={props.handleMapMounted} />
-));
+const defaultContainerStyle = {
+  width: '500px',
+  height: '500px'
+};
 
-class MapView extends Component {
-  state = {
-    center: null,
-  };
+const defaultCenter = {
+  lat: 40.6976637,
+  lng: -74.1196737
+};
 
-  handleMapMounted = map => {
-    this.map = map;
-    this.props.onMapReady && this.props.onMapReady();
-  };
+function MapView(props) {
+  // the googleMapsApiKey has to be loaded as a prop
+  console.log("props:");
+  console.log(props);
+  const {center, containerStyle, zoom, handleMapContext, options} = props
+  console.log(center);
+  const [zoomState, setZoom] = React.useState(zoom===undefined?10:zoomValue);
+  const [map, setMap] = React.useState(null);
+  const [centerState, setCenter] = React.useState(center===undefined?defaultCenter:center);
+  const [containerStyleState, setContainerStyle] = React.useState(containerStyle===undefined?defaultContainerStyle:containerStyle)
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: props.googleMapsApiKey
+  })
+  console.log("CenterState")
+  console.log(centerState);
 
-  getCamera = () => {
+  const getCamera = () => {
     return {
-      zoom: this.map.getZoom(),
-      center: this.map.getCenter(),
-      heading: this.map.getHeading(),
+      zoom: zoomState,
+      center: centerState,
+      heading: map.getHeading(),
     };
   };
-
-  animateCamera(camera) {
-    this.setState({ zoom: camera.zoom });
-    this.setState({ center: camera.center });
+  const animateCamera = (camera) => {
+    setZoom(camera.zoom);
+    setCenter(camera.center);
   }
 
-  animateToRegion(coordinates) {
-    this.setState({
-      center: { lat: coordinates.latitude, lng: coordinates.longitude },
-    });
+  const animateToRegion = (coordinates) => {
+    setCenter(coordinates)
   }
-
-  onDragEnd = () => {
-    const { onRegionChangeComplete } = this.props;
-    if (this.map && onRegionChangeComplete) {
-      const center = this.map.getCenter();
+  const onClick = () => {
+    console.log('click')
+  }
+  const onDragEnd = () => {
+    console.log("idled end");
+    const { onRegionChangeComplete } = props;
+    if (map && onRegionChangeComplete) {
+      const center = map.getCenter();
       onRegionChangeComplete({
         latitude: center.lat(),
         longitude: center.lng(),
       });
     }
   };
+  const onLoad = React.useCallback(function callback(map) {
+    const bounds = new window.google.maps.LatLngBounds();
+    map.fitBounds(bounds);
+    handleMapContext(map)
+    setMap(map)
+    map.setCenter(centerState)
+  }, [])
 
-  render() {
-    const { region, initialRegion, onRegionChange, onPress, options, defaultZoom } = this.props;
-    const { center } = this.state;
-    const style = this.props.style || styles.container;
-
-    const googleMapProps = center
-      ? { center }
-      : region
-      ? {
-          center: {
-            lat: region.latitude,
-            lng: region.longitude,
-          },
-        }
-      : {
-          defaultCenter: {
-            lat: initialRegion.latitude,
-            lng: initialRegion.longitude,
-          },
-        };
-    const zoom =
-      defaultZoom ||
-      (region && region.latitudeDelta
-        ? Math.round(Math.log(360 / region.latitudeDelta) / Math.LN2)
-        : initialRegion && initialRegion.latitudeDelta
-        ? Math.round(Math.log(360 / initialRegion.latitudeDelta) / Math.LN2)
-        : 15);
-    googleMapProps['zoom'] = this.state.zoom ? this.state.zoom : zoom;
-    return (
-      <View style={style}>
-        <GoogleMapContainer
-          handleMapMounted={this.handleMapMounted}
-          containerElement={<div style={{ height: '100%' }} />}
-          mapElement={<div style={{ height: '100%' }} />}
-          onZoomChanged={() => {
-            this.setState({ zoom: this.map.getZoom() });
-          }}
-          {...googleMapProps}
-          onDragStart={onRegionChange}
-          onIdle={this.onDragEnd}
-          defaultZoom={zoom}
-          onClick={onPress}
-          options={options}>
-          {this.props.children}
-        </GoogleMapContainer>
-      </View>
-    );
-  }
+  const onUnmount = React.useCallback(function callback(map) {
+    setMap(null)
+  }, [])
+  console.log("zoom"+zoomState);
+  return isLoaded ? (
+      <GoogleMap
+          mapContainerStyle={containerStyleState}
+          center={centerState}
+          zoom={zoomState}
+          onLoad={onLoad}
+          onUnmount={onUnmount}
+          onClick={onClick}
+          onIdle={onDragEnd}
+          options={options}
+      >
+        {props.children /* Child components, such as markers, info windows, etc. */ }
+       </GoogleMap>
+  ) : <div></div>
 }
-
-MapView.Marker = Marker;
-MapView.Polyline = Polyline;
-MapView.Callout = Callout;
-
-const styles = StyleSheet.create({
-  container: {
-    height: '100%',
-  },
-});
-
-export default MapView;
+//MapView.Marker = Marker;
+export default React.memo(MapView)
