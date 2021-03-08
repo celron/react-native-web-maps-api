@@ -1,12 +1,12 @@
 {
-  "name": "react-native-web-maps",
+  "name": "react-native-web-maps-api",
   "version": "0.3.0",
   "description": "React Native for Web implementation of react-native-maps",
   "main": "src/index.js",
   "main-es": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "git@github.com:react-native-web-community/react-native-web-maps.git"
+    "url": "git@github.com:celron/react-native-web-maps-api.git"
   },
   "author": {
     "name": "Aurore Malherbes",
