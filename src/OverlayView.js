@@ -3,7 +3,10 @@ import { OverlayView } from '@react-google-maps/api';
 
 class MapviewOverlayView extends Component {
   render() {
-    return <OverlayView {...this.props} />;
+    console.log(this.props);
+    return (<OverlayView {...this.props}>
+      {this.props.children}
+    </OverlayView>);
   }
 }
 

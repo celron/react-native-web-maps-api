@@ -12,7 +12,7 @@ class MapViewMarker extends Component {
     this.setState({ isOpen: false });
   }
   render() {
-    const { description, title, position, onClick, ...rest } = this.props;
+    const { title, position, onClick, ...rest } = this.props;
 
     const childrenWithProps = React.Children.map(this.props.children, child => {
       return React.cloneElement(child, { hideCallout: this.hideCallout.bind(this) });
