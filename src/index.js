@@ -20,10 +20,7 @@ const defaultCenter = {
 
 function MapView(props) {
   // the googleMapsApiKey has to be loaded as a prop
-  console.log('props:');
-  console.log(props);
   const { center, containerStyle, zoom, handleMapContext, options } = props;
-  console.log(center);
   const [zoomState, setZoom] = React.useState(zoom === undefined ? 10 : zoom);
   const [map, setMap] = React.useState(null);
   const [centerState, setCenter] = React.useState(center === undefined ? defaultCenter : center);
@@ -34,20 +31,6 @@ function MapView(props) {
     id: 'google-map-script',
     googleMapsApiKey: props.googleMapsApiKey,
   });
-  console.log('CenterState');
-  console.log(centerState);
-
-  const getCamera = () => {
-    return {
-      zoom: zoomState,
-      center: centerState,
-      heading: map.getHeading(),
-    };
-  };
-  const animateCamera = camera => {
-    setZoom(camera.zoom);
-    setCenter(camera.center);
-  };
 
   const animateToRegion = coordinates => {
     setCenter(coordinates);
@@ -62,7 +45,7 @@ function MapView(props) {
       const center = map.getCenter();
       const a = center.lat()
       const b = center.lng()
-      console.log(a+":"+b);
+      console.log(a+ ":" +b);
       onRegionChangeComplete({
         lat: center.lat(),
         lng: center.lng(),
@@ -70,8 +53,6 @@ function MapView(props) {
     }
   };
   const onLoad = React.useCallback(function callback(map) {
-    //const bounds = new window.google.maps.LatLngBounds();
-    //map.fitBounds(bounds);
     if (handleMapContext !== undefined) handleMapContext(map);
     setMap(map);
     map.setCenter(centerState);
@@ -80,7 +61,6 @@ function MapView(props) {
   const onUnmount = React.useCallback(function callback(map) {
     setMap(null);
   }, []);
-  console.log('zoom' + zoomState);
   return isLoaded ? (
     <GoogleMap
       mapContainerStyle={containerStyleState}
