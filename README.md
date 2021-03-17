@@ -47,23 +47,13 @@ See the original [documentation](https://github.com/airbnb/react-native-maps).
 The supported components are:
 
 * `MapView`
-* `MapView.Marker`
-* `MapView.Polyline`
+* `Marker`
+* `Polyline`
+* `Circle`
+* `InfoWindow`
+* `OverlayView`
 
-`MapView`:
-- The officially supported props are:
-    - `region`
-- The officially supported events are:
-    - `onRegionChange`
-    - `onRegionChangeComplete`
-    - `onPress`
-
-`MapView.Marker`:
-- The officially supported props are:
-    - `title`
-    - `description`
-    - `coordinate`
-
+This is a 'react wrapper' around react-google-maps-api
 
 ## Examples
 See the [storybook](https://react-native-web-community.github.io/react-native-web-maps/storybook/index.html).
