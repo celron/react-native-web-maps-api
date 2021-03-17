@@ -32,20 +32,11 @@ function MapView(props) {
     googleMapsApiKey: props.googleMapsApiKey,
   });
 
-  const animateToRegion = coordinates => {
-    setCenter(coordinates);
-  };
-  const onClick = () => {
-    console.log('map click');
-  };
   const onDragEnd = () => {
     console.log('idled end');
     const { onRegionChangeComplete } = props;
     if (map && onRegionChangeComplete) {
       const center = map.getCenter();
-      const a = center.lat()
-      const b = center.lng()
-      console.log(a+ ":" +b);
       onRegionChangeComplete({
         lat: center.lat(),
         lng: center.lng(),
